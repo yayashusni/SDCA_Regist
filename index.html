@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta nama="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Registrasi</title>
+    <link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#006400" />
+
+    <link rel="shortcut icon" href="Assets/favicon.png" type="image/png" />
+    <link rel="stylesheet" href="css/bootstrap.min.css"  />
+    <link rel="stylesheet" href="css/bootstrap-icons.css" />
+
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .full-height {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            width: 100%;
+            /* Menyesuaikan semua perangkat */
+            max-width: 600px;
+            /* Pas di iPad & tidak terlalu besar di desktop */
+            padding: 30px;
+        }
+
+        /* Perbesar teks di layar kecil */
+        .form-control,
+        .btn {
+            font-size: 1rem;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="container full-height">
+        <div class="card shadow-lg">
+            <div class="card-head text-center">
+                <img src="Assets/logo.png" alt="logo" srcset="" />
+            </div>
+            <div class="card-body">
+                <h5 class="mb-2 mt-2">Form Registrasi</h5>
+                <form id="registrationForm">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="nama" placeholder="Nama" required />
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="kelas" placeholder="Kelas" required />
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="alamat" placeholder="Alamat" required />
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="asal_sekolah" placeholder="Asal Sekolah" required />
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="nama_ortu" placeholder="Nama Orang Tua" required />
+                    </div>
+                    <div class="mb-3">
+                        <input type="tel" class="form-control" id="no_hp_ortu" placeholder="No HP Orang Tua" required />
+                    </div>
+                    <div class="mb-3">
+                        <input type="tel" class="form-control" id="no_hp_siswa" placeholder="No HP Siswa" required />
+                    </div>
+                    <button type="button" class="btn btn-success w-100" onclick="simpanData()">
+                        Register
+                    </button>
+                </form>
+
+                <!-- Data terbaru -->
+
+                <div id="dataTerbaru" class="alert alert-info alert-dismissible fade show mt-3 d-none text-center"
+                    role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <a class="btn btn-link mt-2" style="text-decoration: none" onclick="lihatSemuaData()">
+                    Lihat data
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(".alert").alert();
+    </script>
+
+    <script>
+        function simpanData() {
+            const form = document.getElementById("registrationForm");
+
+// Cek validitas form
+if (!form.checkValidity()) {
+    form.reportValidity(); // Tampilkan pesan error dari HTML5
+    return; // Hentikan eksekusi jika form tidak valid
+}
+
+            let nama = document.getElementById("nama").value;
+            let kelas = document.getElementById("kelas").value;
+            let alamat = document.getElementById("alamat").value;
+            let asalSekolah = document.getElementById("asal_sekolah").value;
+            let namaOrtu = document.getElementById("nama_ortu").value;
+            let noHpOrtu = document.getElementById("no_hp_ortu").value;
+            let noHpSiswa = document.getElementById("no_hp_siswa").value;
+
+            let today = new Date();
+            let tanggal =
+                today.getDate() +
+                "/" +
+                (today.getMonth() + 1) +
+                "/" +
+                today.getFullYear();
+            let hari = today.toLocaleString("id-ID", { weekday: "long" });
+
+            let data = {
+                hari: hari,
+                tanggal: tanggal,
+                nama: nama,
+                kelas:kelas,
+                alamat: alamat,
+                asal_sekolah: asalSekolah,
+                nama_ortu:namaOrtu,
+                no_hp_ortu: noHpOrtu,
+                no_hp_siswa: noHpSiswa,
+            };
+
+            let dataList = JSON.parse(localStorage.getItem("registrasiData")) || [];
+            dataList.push(data);
+            localStorage.setItem("registrasiData", JSON.stringify(dataList));
+            localStorage.setItem("alertClosed", "false");
+            document.getElementById("registrationForm").reset();
+            tampilkanDataTerbaru();
+        }
+
+        function tampilkanDataTerbaru() {
+            let dataList = JSON.parse(localStorage.getItem("registrasiData")) || [];
+            let alertClosed = localStorage.getItem("alertClosed") === "true";
+            let dataTerbaru = document.getElementById("dataTerbaru");
+
+            if (dataList.length > 0 && !alertClosed) {
+                let data = dataList[dataList.length - 1]; 
+
+                dataTerbaru.innerHTML = `
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" aria-label="Close" onclick="tutupAlert()"></button>
+            <h5 class="mb-1 text-success"> Data Tersimpan!</h5>
+            <div>${data.hari}, ${data.tanggal}</div>
+            <div><strong>${data.nama}</strong> </div>
+        `;
+                dataTerbaru.classList.remove("d-none");
+                dataTerbaru.classList.add("position-relative");
+            }
+        }
+
+        function tutupAlert() {
+            document.getElementById("dataTerbaru").classList.add("d-none");
+            localStorage.setItem("alertClosed", "true");
+        }
+
+        function lihatSemuaData() {
+            window.location.href = "data.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", tampilkanDataTerbaru);
+    </script>
+
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        $(".alert").alert();
+    </script>
+
+<script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("js/service-worker.js")
+        .then(reg => console.log("Service Worker registered", reg))
+        .catch(err => console.error("Service Worker failed", err));
+    }
+  </script>
+  
+</body>
+
+</html>

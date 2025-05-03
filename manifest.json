@@ -1,0 +1,21 @@
+{
+  "name": "Form Registrasi SDCA",
+  "short_name": "Registrasi SDCA",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#006400",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "Assets/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Assets/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
